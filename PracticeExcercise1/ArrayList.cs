@@ -1,16 +1,16 @@
 ﻿using System;
 namespace PracticeExercise1
 {
-	public class ArrayList : IList
-	{
+    public class ArrayList : IList
+    {
         private int[] array;
         private int length;
 
-		public ArrayList()
-		{
+        public ArrayList()
+        {
             array = new int[16];
             length = 0;
-		}
+        }
 
         /// <summary>
         /// Returns first element in list, null if empty.
@@ -36,7 +36,10 @@ namespace PracticeExercise1
         /// <summary>
         /// Returns last element in list, null if empty.
         /// </summary>
-        public int? Last { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public int? Last
+        {
+            get => IsEmpty ? null : array[Length - 1];
+        }
 
         /// <summary>
         /// Returns true if list is has no elements; false otherwise.
@@ -90,7 +93,20 @@ namespace PracticeExercise1
         /// <returns>Index of first element with value; -1 if element is not found</returns>
         public int FirstIndexOf(int value)
         {
-            throw new NotImplementedException();
+            int i = 0;
+            foreach (int val in array)
+            {
+                if (val == value)
+                {
+                    return i;
+                }
+                else
+                {
+                    i++;
+                }
+            }
+            return -1;
+            //throw new NotImplementedException();
         }
 
         // TODO
@@ -102,7 +118,18 @@ namespace PracticeExercise1
         /// <param name="existingValue"></param>
         public void InsertAfter(int newValue, int existingValue)
         {
-            throw new NotImplementedException();
+            int new_index = FirstIndexOf(existingValue) + 1;
+            if (new_index == 0)
+            {
+                Append(newValue);
+            }
+            else
+            {
+                ShiftRight(new_index);
+                array[new_index] = newValue;
+                length++;
+            }
+            //throw new NotImplementedException();
         }
 
         // TODO
@@ -113,7 +140,42 @@ namespace PracticeExercise1
         /// <param name="index"></param>
         public void InsertAt(int value, int index)
         {
-            throw new NotImplementedException();
+            //0- check if arraylist is full
+            
+            if (array.Length == length)
+            {
+                Resize();
+            }
+
+            //0.5-check range (like Get)
+
+            if (index == 0)
+            {
+                ShiftRight(index);
+                array[index] = value;
+                length++;
+            }
+
+            else if ((index > 2 * Length - 1) || (index < 0))
+            {
+                throw new IndexOutOfRangeException();
+            }
+
+            else
+            {
+                ShiftRight(index);
+                array[index] = value;
+                length++;
+            }
+
+            //1- shift right starting at index
+
+            //ShiftRight(index);
+            
+            //2- write new value at index
+            //array[index] = value;
+            //3- increment length
+            //length++;
         }
 
         /// <summary>
@@ -143,7 +205,7 @@ namespace PracticeExercise1
             }
         }
 
-        private void ShiftLeft( int startingIndex)
+        private void ShiftLeft (int startingIndex)
         {
             for(int i = startingIndex+1; i <= Length; i++ )
             {
@@ -159,7 +221,17 @@ namespace PracticeExercise1
         /// <param name="value">value of item to be removed</param>
         public void Remove(int value)
         {
-            throw new NotImplementedException();
+            int index = FirstIndexOf(value);
+            if (index != -1)
+            {
+                RemoveAt(index);
+            }
+            //else
+            //{
+            //    throw new NotImplementedException();
+            //}
+
+            //throw new NotImplementedException();
         }
 
         // TODO
@@ -169,21 +241,35 @@ namespace PracticeExercise1
         /// <param name="index"></param>
         public void RemoveAt(int index)
         {
-            ShiftLeft(index);
-            length--;
+            if (index > Length - 1 || index < 0)
+            {
+                throw new IndexOutOfRangeException();
+            }
+            else
+            {
+                ShiftLeft(index);
+                length--;
+            }
         }
 
         public override string ToString()
         {
             string str = "[ ";
 
-            for(int i=0; i < Length-1; i++)
+            if (Length == 0)
             {
-                str += array[i] + ", ";
+                str += "]";
             }
+            else
+            {
+                for (int i = 0; i < Length - 1; i++)
+                {
+                    str += array[i] + ", ";
+                }
 
-            str += array[Length - 1];
-            str += "]";
+                str += array[Length - 1];
+                str += "]";
+            }
 
             return str;
 
